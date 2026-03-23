@@ -230,20 +230,24 @@ const Navbar = () => {
 
 const HERO_SLIDES = [
   {
-    src: '/hero/heropic.jpg',
-    alt: 'Premium car detailing foam wash cinematic',
+    src: '/hero/videos/6873168-uhd_3840_2160_25fps.mp4',
+    alt: 'Premium car detailing cinematic 1',
+    type: 'video'
   },
   {
-    src: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?q=80&w=2500',
-    alt: 'Professional car polishing close-up',
+    src: '/hero/videos/6157968-hd_1920_1080_30fps.mp4',
+    alt: 'Premium car detailing cinematic 2',
+    type: 'video'
   },
   {
-    src: '/hero/hero3.jpg',
-    alt: 'Premium luxury car detailing results',
+    src: '/hero/videos/6159207-hd_1920_1080_30fps.mp4',
+    alt: 'Premium car detailing cinematic 3',
+    type: 'video'
   },
   {
-    src: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=2500',
-    alt: 'Luxury car dashboard and steering wheel',
+    src: '/hero/videos/6872088-hd_1920_1080_25fps.mp4',
+    alt: 'Premium car detailing cinematic 4',
+    type: 'video'
   },
 ];
 
@@ -260,7 +264,6 @@ const Hero = () => {
   }, [prefersReducedMotion]);
 
   const activeSlide = HERO_SLIDES[currentSlide];
-  const youtubeId = "ScMzIvxBSi4"; // Stable cinematic detailing montage
 
   return (
     <section 
@@ -269,32 +272,26 @@ const Hero = () => {
     >
       {/* Cinematic Background */}
       <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
-        {/* YouTube Video Background - Cinematic Montage */}
-        <div className="absolute inset-0 overflow-hidden">
-          <iframe
-            src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${youtubeId}&rel=0&showinfo=0&iv_load_policy=3&modestbranding=1&disablekb=1`}
-            className="absolute top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2 opacity-70"
-            style={{ border: 'none' }}
-            allow="autoplay; encrypted-media"
-          />
-        </div>
-
-        {/* Slideshow image fallbacks/transitions on top if needed */}
-        <AnimatePresence initial={false}>
+        {/* Local Video Background Slideshow */}
+        <AnimatePresence initial={false} mode="wait">
           <motion.div
             key={currentSlide}
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.3 }} // Subtle overlay of current slide theme
+            animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1.4 }}
-            className="absolute inset-0 bg-black/40"
+            transition={{ duration: 1.2 }}
+            className="absolute inset-0"
           >
-            <img
+            <video
               src={activeSlide.src}
-              alt={activeSlide.alt}
-              className="w-full h-full object-cover mix-blend-overlay opacity-50"
-              referrerPolicy="no-referrer"
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full h-full object-cover"
             />
+            {/* Subtle Overlay */}
+            <div className="absolute inset-0 bg-black/40" />
           </motion.div>
         </AnimatePresence>
 
@@ -306,7 +303,6 @@ const Hero = () => {
       {/* Hero copy */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 w-full pt-32 md:pt-40 -translate-y-6 md:translate-y-0 text-center md:text-left">
         <motion.div
-          key={currentSlide}
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
