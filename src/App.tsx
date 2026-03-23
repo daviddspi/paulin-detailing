@@ -231,7 +231,6 @@ const Navbar = () => {
 const HERO_SLIDES = [
   {
     src: '/hero/heropic.jpg',
-    video: 'https://assets.mixkit.co/videos/preview/mixkit-car-washing-in-a-self-service-car-wash-48419-large.mp4',
     alt: 'Premium car detailing foam wash cinematic',
   },
   {
@@ -240,7 +239,6 @@ const HERO_SLIDES = [
   },
   {
     src: '/hero/hero3.jpg',
-    video: 'https://assets.mixkit.co/videos/preview/mixkit-man-polishing-a-black-car-48421-large.mp4',
     alt: 'Premium luxury car detailing results',
   },
   {
@@ -257,47 +255,46 @@ const Hero = () => {
     if (prefersReducedMotion) return;
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
-    }, 5500); // Slightly longer for video
+    }, 5000);
     return () => clearInterval(timer);
   }, [prefersReducedMotion]);
 
   const activeSlide = HERO_SLIDES[currentSlide];
+  const youtubeId = "0_u6_vD_f04"; // Ultra-premium detailing montage
 
   return (
     <section 
       className="relative min-h-screen flex items-center overflow-hidden" 
       style={{ minHeight: '100svh' }}
     >
-      {/* Cinematic slideshow background */}
-      <div className="absolute inset-0 z-0" aria-hidden="true">
+      {/* Cinematic Background */}
+      <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
+        {/* YouTube Video Background - Cinematic Montage */}
+        <div className="absolute inset-0 overflow-hidden">
+          <iframe
+            src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${youtubeId}&rel=0&showinfo=0&iv_load_policy=3&modestbranding=1&disablekb=1`}
+            className="absolute top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2 opacity-70"
+            style={{ border: 'none' }}
+            allow="autoplay; encrypted-media"
+          />
+        </div>
+
+        {/* Slideshow image fallbacks/transitions on top if needed */}
         <AnimatePresence initial={false}>
           <motion.div
             key={currentSlide}
-            initial={{ opacity: 0, scale: 1.06 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.3 }} // Subtle overlay of current slide theme
             exit={{ opacity: 0 }}
-            transition={{ duration: 1.4, ease: 'easeInOut' }}
-            className="absolute inset-0"
+            transition={{ duration: 1.4 }}
+            className="absolute inset-0 bg-black/40"
           >
-            {activeSlide.video ? (
-              <video
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="auto"
-                className="w-full h-full object-cover"
-              >
-                <source src={activeSlide.video} type="video/mp4" />
-              </video>
-            ) : (
-              <img
-                src={activeSlide.src}
-                alt={activeSlide.alt}
-                className="w-full h-full object-cover"
-                referrerPolicy="no-referrer"
-              />
-            )}
+            <img
+              src={activeSlide.src}
+              alt={activeSlide.alt}
+              className="w-full h-full object-cover mix-blend-overlay opacity-50"
+              referrerPolicy="no-referrer"
+            />
           </motion.div>
         </AnimatePresence>
 
