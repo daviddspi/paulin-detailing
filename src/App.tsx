@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
+import { motion, AnimatePresence, useReducedMotion, useMotionValue, useSpring, useTransform } from 'motion/react';
 import { 
   Settings, 
   Wrench,
@@ -231,6 +231,7 @@ const Navbar = () => {
 const HERO_SLIDES = [
   {
     src: '/hero/heropic.jpg',
+    video: 'https://player.vimeo.com/external/510850877.hd.mp4?s=d5e9ed9ea40ba755e28512cce29ad3caf56007ec&profile_id=174',
     alt: 'Cinematic luxury car profile in dark studio',
   },
   {
@@ -239,6 +240,7 @@ const HERO_SLIDES = [
   },
   {
     src: '/hero/hero3.jpg',
+    video: 'https://player.vimeo.com/external/517614051.hd.mp4?s=1d97356c9a759685e13d7e7932c0d51ef77f10b7&profile_id=174',
     alt: 'Premium leather car interior detailing',
   },
   {
@@ -250,17 +252,45 @@ const HERO_SLIDES = [
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const prefersReducedMotion = useReducedMotion();
+  
+  // Parallax Motion Values
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  
+  const springConfig = { damping: 25, stiffness: 150 };
+  const smoothX = useSpring(mouseX, springConfig);
+  const smoothY = useSpring(mouseY, springConfig);
+
+  // Different intensities for depth effect
+  const headlineX = useTransform(smoothX, [-400, 400], [-15, 15]);
+  const headlineY = useTransform(smoothY, [-400, 400], [-15, 15]);
+  
+  const badgeX = useTransform(smoothX, [-400, 400], [-25, 25]);
+  const badgeY = useTransform(smoothY, [-400, 400], [-25, 25]);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (window.innerWidth < 1024) return; // Disable on tablet/mobile
+    const { clientX, clientY } = e;
+    mouseX.set(clientX - window.innerWidth / 2);
+    mouseY.set(clientY - window.innerHeight / 2);
+  };
 
   useEffect(() => {
     if (prefersReducedMotion) return;
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
-    }, 4500);
+    }, 5500); // Slightly longer for video
     return () => clearInterval(timer);
   }, [prefersReducedMotion]);
 
+  const activeSlide = HERO_SLIDES[currentSlide];
+
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden" style={{ minHeight: '100svh' }}>
+    <section 
+      onMouseMove={handleMouseMove}
+      className="relative min-h-screen flex items-center overflow-hidden" 
+      style={{ minHeight: '100svh' }}
+    >
       {/* Cinematic slideshow background */}
       <div className="absolute inset-0 z-0" aria-hidden="true">
         <AnimatePresence initial={false}>
@@ -272,14 +302,25 @@ const Hero = () => {
             transition={{ duration: 1.4, ease: 'easeInOut' }}
             className="absolute inset-0"
           >
-            <img
-              src={HERO_SLIDES[currentSlide].src}
-              alt={HERO_SLIDES[currentSlide].alt}
-              className="w-full h-full object-cover"
-              referrerPolicy="no-referrer"
-              fetchPriority={currentSlide === 0 ? 'high' : 'auto'}
-              loading={currentSlide === 0 ? 'eager' : 'lazy'}
-            />
+            {activeSlide.video ? (
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full h-full object-cover scale-105"
+                poster={activeSlide.src}
+              >
+                <source src={activeSlide.video} type="video/mp4" />
+              </video>
+            ) : (
+              <img
+                src={activeSlide.src}
+                alt={activeSlide.alt}
+                className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+              />
+            )}
           </motion.div>
         </AnimatePresence>
 
@@ -291,6 +332,7 @@ const Hero = () => {
       {/* Hero copy */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 w-full pt-32 md:pt-40 -translate-y-6 md:translate-y-0">
         <motion.div
+          style={{ x: headlineX, y: headlineY }}
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
@@ -308,6 +350,7 @@ const Hero = () => {
 
           {/* Premium Social Proof Badge (Auto Corona Style) */}
           <motion.div 
+            style={{ x: badgeX, y: badgeY }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.8 }}
