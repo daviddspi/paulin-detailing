@@ -260,7 +260,7 @@ const Hero = () => {
   }, [prefersReducedMotion]);
 
   const activeSlide = HERO_SLIDES[currentSlide];
-  const youtubeId = "0_u6_vD_f04"; // Ultra-premium detailing montage
+  const youtubeId = "ScMzIvxBSi4"; // Stable cinematic detailing montage
 
   return (
     <section 
@@ -306,6 +306,7 @@ const Hero = () => {
       {/* Hero copy */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 w-full pt-32 md:pt-40 -translate-y-6 md:translate-y-0 text-center md:text-left">
         <motion.div
+          key={currentSlide}
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
