@@ -1140,11 +1140,20 @@ const Pricing = () => {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash;
-      if (hash) {
+      if (hash && hash.startsWith('#cat-')) {
         const categoryId = hash.replace('#', '');
         const categoryIdx = BUSINESS_CONFIG.serviceCategories.findIndex((cat: any) => cat.id === categoryId);
+        
         if (categoryIdx !== -1) {
           setOpenCategories(prev => prev.includes(categoryIdx) ? prev : [...prev, categoryIdx]);
+          
+          // Wait for accordion to start opening, then force scroll
+          setTimeout(() => {
+            const element = document.getElementById(categoryId);
+            if (element) {
+              element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }, 100);
         }
       }
     };
