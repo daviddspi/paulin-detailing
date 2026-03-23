@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useReducedMotion, useMotionValue, useSpring, useTransform } from 'motion/react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { 
   Settings, 
   Wrench,
@@ -231,8 +231,8 @@ const Navbar = () => {
 const HERO_SLIDES = [
   {
     src: '/hero/heropic.jpg',
-    video: 'https://player.vimeo.com/external/510850877.hd.mp4?s=d5e9ed9ea40ba755e28512cce29ad3caf56007ec&profile_id=174',
-    alt: 'Cinematic luxury car profile in dark studio',
+    video: 'https://player.vimeo.com/external/517614051.hd.mp4?s=1d97356c9a759685e13d7e7932c0d51ef77f10b7&profile_id=174',
+    alt: 'Premium car detailing foam wash cinematic',
   },
   {
     src: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?q=80&w=2500',
@@ -240,8 +240,8 @@ const HERO_SLIDES = [
   },
   {
     src: '/hero/hero3.jpg',
-    video: 'https://player.vimeo.com/external/517614051.hd.mp4?s=1d97356c9a759685e13d7e7932c0d51ef77f10b7&profile_id=174',
-    alt: 'Premium leather car interior detailing',
+    video: 'https://player.vimeo.com/external/510850877.hd.mp4?s=d5e9ed9ea40ba755e28512cce29ad3caf56007ec&profile_id=174',
+    alt: 'Premium luxury car detailing results',
   },
   {
     src: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=2500',
@@ -252,28 +252,6 @@ const HERO_SLIDES = [
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const prefersReducedMotion = useReducedMotion();
-  
-  // Parallax Motion Values
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  
-  const springConfig = { damping: 25, stiffness: 150 };
-  const smoothX = useSpring(mouseX, springConfig);
-  const smoothY = useSpring(mouseY, springConfig);
-
-  // Different intensities for depth effect
-  const headlineX = useTransform(smoothX, [-400, 400], [-15, 15]);
-  const headlineY = useTransform(smoothY, [-400, 400], [-15, 15]);
-  
-  const badgeX = useTransform(smoothX, [-400, 400], [-25, 25]);
-  const badgeY = useTransform(smoothY, [-400, 400], [-25, 25]);
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (window.innerWidth < 1024) return; // Disable on tablet/mobile
-    const { clientX, clientY } = e;
-    mouseX.set(clientX - window.innerWidth / 2);
-    mouseY.set(clientY - window.innerHeight / 2);
-  };
 
   useEffect(() => {
     if (prefersReducedMotion) return;
@@ -287,7 +265,6 @@ const Hero = () => {
 
   return (
     <section 
-      onMouseMove={handleMouseMove}
       className="relative min-h-screen flex items-center overflow-hidden" 
       style={{ minHeight: '100svh' }}
     >
@@ -308,8 +285,8 @@ const Hero = () => {
                 muted
                 loop
                 playsInline
-                className="w-full h-full object-cover scale-105"
-                poster={activeSlide.src}
+                preload="auto"
+                className="w-full h-full object-cover"
               >
                 <source src={activeSlide.video} type="video/mp4" />
               </video>
@@ -330,9 +307,8 @@ const Hero = () => {
       </div>
 
       {/* Hero copy */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 w-full pt-32 md:pt-40 -translate-y-6 md:translate-y-0">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 w-full pt-32 md:pt-40 -translate-y-6 md:translate-y-0 text-center md:text-left">
         <motion.div
-          style={{ x: headlineX, y: headlineY }}
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
@@ -350,7 +326,6 @@ const Hero = () => {
 
           {/* Premium Social Proof Badge (Auto Corona Style) */}
           <motion.div 
-            style={{ x: badgeX, y: badgeY }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.8 }}
