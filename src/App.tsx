@@ -18,16 +18,16 @@ import {
   Twitter,
   Menu,
   X,
+  ChevronDown,
   ChevronRight,
   ChevronLeft,
   Plus,
-  ChevronDown,
   Droplets,
   Wind,
   ZoomIn,
   MessageCircle,
   Sparkles,
-  Zap
+  Zap,
 } from 'lucide-react';
 import { BUSINESS_CONFIG } from './config';
 
@@ -60,11 +60,20 @@ const Navbar = () => {
   const navLinks = [
     { name: 'Početna', href: '#' },
     { name: 'Usluge', href: '#services' },
-    { name: 'Cenovnik', href: '#packages' },
+    { 
+      name: 'Cenovnik', 
+      dropdown: [
+        { name: 'Paketi', href: '#packages' },
+        { name: 'Pojedinačne usluge', href: '#price-list' },
+      ]
+    },
     { name: 'Galerija', href: '#gallery' },
     { name: 'O nama', href: '#about' },
     { name: 'Kontakt', href: '#contact' },
   ];
+
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-secondary/90 backdrop-blur-md py-4 md:py-8 shadow-lg' : 'bg-transparent py-6 md:py-12'}`}
@@ -83,13 +92,47 @@ const Navbar = () => {
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
-            <a 
+            <div 
               key={link.name} 
-              href={link.href} 
-              className="text-sm font-medium hover:text-primary transition-colors uppercase tracking-widest"
+              className="relative group h-full flex items-center"
+              onMouseEnter={() => link.dropdown && setActiveDropdown(link.name)}
+              onMouseLeave={() => setActiveDropdown(null)}
             >
-              {link.name}
-            </a>
+              <a 
+                href={link.href || '#'} 
+                className="text-sm font-medium hover:text-primary transition-colors uppercase tracking-widest flex items-center gap-1.5"
+                onClick={(e) => link.dropdown && e.preventDefault()}
+              >
+                {link.name}
+                {link.dropdown && <ChevronDown className={`w-3 h-3 transition-transform duration-300 ${activeDropdown === link.name ? 'rotate-180' : ''}`} />}
+              </a>
+
+              {link.dropdown && (
+                <AnimatePresence>
+                  {activeDropdown === link.name && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute top-full left-1/2 -translate-x-1/2 pt-4"
+                    >
+                      <div className="bg-secondary/95 backdrop-blur-xl border border-white/10 rounded-2xl p-2 min-w-[200px] shadow-2xl">
+                        {link.dropdown.map((sub) => (
+                          <a
+                            key={sub.name}
+                            href={sub.href}
+                            className="block px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-white/5 hover:text-primary transition-colors text-white/70"
+                          >
+                            {sub.name}
+                          </a>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              )}
+            </div>
           ))}
           <a
             href="#contact"
@@ -125,15 +168,49 @@ const Navbar = () => {
           >
             <div className="flex flex-col gap-4 items-center text-center">
               {navLinks.map((link) => (
-                <a 
-                  key={link.name} 
-                  href={link.href} 
-                  className="text-lg font-medium hover:text-primary transition-colors min-h-[44px] flex items-center justify-center w-full"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  role="menuitem"
-                >
-                  {link.name}
-                </a>
+                <div key={link.name} className="w-full">
+                  {link.dropdown ? (
+                    <div className="flex flex-col items-center">
+                      <button 
+                        onClick={() => setMobileExpanded(mobileExpanded === link.name ? null : link.name)}
+                        className="text-lg font-medium hover:text-primary transition-colors min-h-[44px] flex items-center justify-center w-full gap-2 uppercase"
+                      >
+                        {link.name}
+                        <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${mobileExpanded === link.name ? 'rotate-180' : ''}`} />
+                      </button>
+                      <AnimatePresence>
+                        {mobileExpanded === link.name && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            className="flex flex-col gap-2 overflow-hidden bg-white/5 rounded-2xl w-full"
+                          >
+                            {link.dropdown.map((sub) => (
+                              <a
+                                key={sub.name}
+                                href={sub.href}
+                                className="text-sm font-bold uppercase tracking-widest py-4 text-white/60 hover:text-primary"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                              >
+                                {sub.name}
+                              </a>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  ) : (
+                    <a 
+                      href={link.href} 
+                      className="text-lg font-medium hover:text-primary transition-colors min-h-[44px] flex items-center justify-center w-full uppercase"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      role="menuitem"
+                    >
+                      {link.name}
+                    </a>
+                  )}
+                </div>
               ))}
               <a
                 href="#contact"
