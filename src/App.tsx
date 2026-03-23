@@ -1448,6 +1448,22 @@ const Contact = () => {
                   </a>
                 ))}
               </div>
+              <div className="space-y-4">
+                <a 
+                  href={BUSINESS_CONFIG.contact.social.instagram} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="flex gap-6 group"
+                >
+                  <div className="w-14 h-14 bg-surface group-hover:bg-primary rounded-2xl flex items-center justify-center shrink-0 border border-white/5 transition-colors">
+                    <Instagram className="text-primary group-hover:text-white w-6 h-6 transition-colors" aria-hidden="true" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold tracking-widest uppercase text-white/60 mb-1">Instagram</p>
+                    <p className="text-lg font-black italic">paulin_detailing</p>
+                  </div>
+                </a>
+              </div>
               <div className="flex gap-6">
                 <div className="w-14 h-14 bg-surface rounded-2xl flex items-center justify-center shrink-0 border border-white/5">
                   <MapPin className="text-primary w-6 h-6" aria-hidden="true" />
@@ -1457,7 +1473,6 @@ const Contact = () => {
                   <div className="space-y-4">
                     {BUSINESS_CONFIG.contact.locations.map((loc, idx) => (
                       <p key={idx} className="text-lg font-black italic mb-1">
-                        {loc.name}:<br />
                         <a 
                           href={loc.mapUrl} 
                           target="_blank" 
