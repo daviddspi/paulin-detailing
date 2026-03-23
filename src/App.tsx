@@ -1270,7 +1270,12 @@ const Pricing = () => {
                   >
                     <div className="flex items-center gap-6">
                       <div className={`w-1.5 h-12 bg-primary transition-all duration-500 ${isOpen ? 'scale-y-100' : 'scale-y-0 opacity-20'}`} />
-                      <h3 id={(category as any).id} className="text-2xl md:text-3xl font-black uppercase italic tracking-tight transition-colors group-hover:text-primary">{category.title}</h3>
+                      <h3 
+                        id={(category as any).id} 
+                        className="text-2xl md:text-3xl font-black uppercase italic tracking-tight transition-colors group-hover:text-primary scroll-mt-24 md:scroll-mt-32"
+                      >
+                        {category.title}
+                      </h3>
                     </div>
                     <div className={`p-3 rounded-full border border-white/10 transition-all duration-500 ${isOpen ? 'rotate-180 bg-primary border-primary text-white' : 'text-white/50 group-hover:text-white group-hover:border-white/20'}`}>
                       <ChevronDown className="w-6 h-6" />
